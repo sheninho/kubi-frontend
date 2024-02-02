@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+
+input[type="text"],input[type="password"],
+input[type="email"],input[type="number"],
+input[type="tel"],
+textarea{
+    @apply w-full border my-1 py-2 px-3 rounded-2xl;
+}
+textarea{
+    height: 140px;
+}
+button{
+    @apply bg-gray-300;
+}
+button.primary{
+    background-color: #F5385D;
+    @apply bg-primary p-2 w-full text-white rounded-2xl;
+}
+
+/* @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap'); */
+
+/* html, body {
+  height: 100vh;
+  overflow: hidden;
+} */
+
+.country-select{
+  @apply w-full border my-1 py-2 px-3 rounded-2xl;
+
+}
+/* styles/Modal.css */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.modal {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  /* max-height: 80%; */
+  position: relative; /* Nécessaire pour positionner la croix */
+}
+
+.cursor-pointer{
+  cursor: pointer;
+}
+
+.button-style {
+  background: none; /* Aucun fond */
+  /* color: inherit; Hérite la couleur du texte de l'élément parent */
+  border: none; /* Pas de bordure */
+  padding: 0; /* Pas de padding */
+  font: inherit; /* Hérite la police de l'élément parent */
+  cursor: pointer; /* Curseur en forme de pointeur pour indiquer qu'il est cliquable */
+  outline: inherit; /* Hérite le contour de l'élément parent (utile pour l'accessibilité) */
+}
+
+.button-border {
+  background: none; /* Aucun fond */
+  font: inherit; /* Hérite la police de l'élément parent */
+  cursor: pointer; /* Curseur en forme de pointeur pour indiquer qu'il est cliquable */
+  outline: inherit; /* Hérite le contour de l'élément parent (utile pour l'accessibilité) */
+}
