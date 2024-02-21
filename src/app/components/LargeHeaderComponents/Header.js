@@ -13,6 +13,7 @@ import AccountActivationForm from '../AccountActivationForm.js';
 import ConfirmationPage from '../ConfirmationPage.js';
 import ResetPassword from '../ResetPassword.js';
 import { useAuth } from '@/app/context/AuthContext.js';
+import { FaUser, FaSignOutAlt } from 'react-icons/fa';
 
 export default function Header() {
   const [modal, setModal] = useState('Login');
@@ -154,8 +155,8 @@ export default function Header() {
         </Link> */}
         <div className='flex justify-end'>
           {isAuthenticated ? (
-            <div className="dropdown-container relative">
-              <button className='button-border flex items-center border hover:shadow-lg border-gray-300 rounded-full py-2 px-2' onClick={toggleDropdown}>
+            <div >
+              <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" className='button-border flex items-center border hover:shadow-lg border-gray-300 rounded-full py-2 px-2' onClick={toggleDropdown}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
@@ -165,29 +166,36 @@ export default function Header() {
                   </svg>
                 </div>
               </button>
+
+
               {isDropdownOpen && (
-                <div className="dropdown-menu ">
-                  <button href="/profile">Profil</button>
-                  <button onClick={logout}>Déconnexion</button>
+                <div className="absolute right-0 z-10 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                  <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                    <li>
+                      <button className="button-style flex items-center px-4 py-2 m-5 text-2xl"><FaUser className="mr-2" />Profil</button>
+                    </li>
+                    <li>
+                      <button className="button-style flex items-center px-4 py-2 m-5 text-2xl" onClick={logout}><FaSignOutAlt className="mr-2" />Déconnexion</button>
+                    </li>
+                  </ul>
                 </div>
-              )}
-            </div>
-          ) : (
-            <button className='button-border flex items-center border hover:shadow-lg border-gray-300 rounded-full py-2 px-2' onClick={handleOpenModal}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-              </svg>
-              <div className="bg-gray-500 text-white rounded-full border border-gray-500 overflow-hidden">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 relative top-1">
-                  <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />
+              )}</div>
+              ) : (
+              <button className='button-border flex items-center border hover:shadow-lg border-gray-300 rounded-full py-2 px-2' onClick={handleOpenModal}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
-              </div>
-            </button>
+                <div className="bg-gray-500 text-white rounded-full border border-gray-500 overflow-hidden">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 relative top-1">
+                    <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              </button>
           )}
-        </div>
+            </div>
       </div>
 
-      {renderModalComponent(modal, changeModal)}
+        {renderModalComponent(modal, changeModal)}
     </header>
   );
 }

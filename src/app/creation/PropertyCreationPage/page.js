@@ -1,34 +1,49 @@
 'use client'
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
-import { useAuth } from '@/app/context/AuthContext.js';
 import axiosService from '../../services/axiosService';
 import CircularProgress from '@mui/material/CircularProgress';
-import { AiOutlineClose } from 'react-icons/ai';
+import { useRouter } from 'next/navigation'
 
 const PropertyCreationPage = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [type, setType] = useState('');
+    const [type, setType] = useState('Sale');
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-
-    const authContext = useContext(useAuth);
+    const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         try {
-            const response = await axiosService.post('/properties/create/', {
+            const response = await axiosService.post(`properties/create/`, {
                 title,
                 description,
                 type
             });
             console.log(response.data);
+
+            // Supposons que l'ID de la propriété est retourné dans response.data.id
+            const propertyId = response.data.id;
+            console.log(propertyId)
+
+            // Enregistrer l'ID de la propriété dans le localStorage
+            localStorage.setItem('currentPropertyId', propertyId);
+
             // Gérer la réponse, par exemple rediriger vers une autre page
+            // Par exemple, rediriger vers la page de détail de la propriété ou vers l'étape suivante de la création
+            // window.location.href = `/properties/details/${propertyId}`;
+
+            router.push('/creation/CategoryDistrictSelectionPage');
+
+            setIsLoading(false);
         } catch (error) {
-            console.error('Erreur lors de la création de la propriété', error);
+            console.log(error);
+            setErrorMessage('Une erreur est survenue lors de la création de la propriété.');
+            setIsLoading(false);
         }
     };
+
 
     return (
         <div className="max-w-lg mx-auto p-4">
@@ -44,6 +59,7 @@ const PropertyCreationPage = () => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     disabled={isLoading}
+                    required 
                 />
                 <textarea
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
@@ -51,6 +67,7 @@ const PropertyCreationPage = () => {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     disabled={isLoading}
+                    required 
                 />
                 <select
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
