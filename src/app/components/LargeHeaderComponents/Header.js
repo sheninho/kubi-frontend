@@ -14,12 +14,14 @@ import ConfirmationPage from '../ConfirmationPage.js';
 import ResetPassword from '../ResetPassword.js';
 import { useAuth } from '@/app/context/AuthContext.js';
 import { FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const [modal, setModal] = useState('Login');
   const [showModal, setShowModal] = useState(false);
   const { isAuthenticated, accessToken, refreshToken, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const router = useRouter()
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -40,8 +42,7 @@ export default function Header() {
       setModal('Login');
       setShowModal(true);
     } else {
-      console.log(accessToken)
-      console.log(refreshToken)
+      router.push("creation/Listing")
     }
   };
 

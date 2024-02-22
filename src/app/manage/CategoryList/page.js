@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { API_URL } from '@/app/services/authService';
 import { AiOutlineClose, AiOutlinePlusCircle } from 'react-icons/ai';
+import axiosService from '@/app/services/axiosService';
 
 const CategoriesManagement = () => {
   const [categories, setCategories] = useState([]);
@@ -17,7 +17,7 @@ const CategoriesManagement = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(`${API_URL}categories/`);
+      const response = await axiosService.get(`${API_URL}categories/`);
       setCategories(response.data.results || []);
     } catch (error) {
       console.error('Error loading categories', error);
@@ -26,7 +26,7 @@ const CategoriesManagement = () => {
 
   const fetchAllFields = async () => {
     try {
-      const response = await axios.get(`${API_URL}fields/`);
+      const response = await axiosService.get(`${API_URL}fields/`);
       setAllFields(response.data.results || []);
     } catch (error) {
       console.error('Error loading fields', error);
@@ -49,7 +49,7 @@ const CategoriesManagement = () => {
     const method = selectedCategory ? 'patch' : 'post';
 
     try {
-      await axios[method](url, categoryData);
+      await axiosService[method](url, categoryData);
       fetchCategories();
       handleModalClose();
     } catch (error) {
@@ -58,7 +58,7 @@ const CategoriesManagement = () => {
   };
 
   return (
-    <div>
+    <div className='mt-16'>
       <button onClick={() => handleModalOpen()} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Add Category
       </button>
@@ -95,7 +95,7 @@ const CategoryModal = ({ isOpen, onClose, onSave, category = null, allFields }) 
       setCategoryFields(category.category_fields || []);
     } else {
       setName('');
-      setApplicationType('');
+      setApplicationType('sale');
       setCategoryFields([]);
     }
   }, [category]);
@@ -129,6 +129,18 @@ const CategoryModal = ({ isOpen, onClose, onSave, category = null, allFields }) 
     setCategoryFields(newFields);
   };
 
+
+  const getAvailableFields = (currentFieldId) => {
+    // Convertit les identifiants en chaînes pour une comparaison cohérente, si nécessaire
+    const selectedFieldIds = category_fields.map(field => String(field.field));
+    const currentFieldIdStr = String(currentFieldId);
+  
+    // Filtre allFields pour exclure ceux déjà sélectionnés, sauf le champ actuel
+    return allFields.filter(field =>
+      !selectedFieldIds.includes(String(field.id)) || currentFieldIdStr === String(field.id)
+    );
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave({
@@ -153,6 +165,7 @@ const CategoryModal = ({ isOpen, onClose, onSave, category = null, allFields }) 
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full p-2 border rounded"
+              required
             />
           </div>
           <div className="mt-4">
@@ -172,13 +185,14 @@ const CategoryModal = ({ isOpen, onClose, onSave, category = null, allFields }) 
             {category_fields.map((field, index) => (
               <div key={index} className="flex items-center mt-2">
                 <select
-                  value={field.field}
+                  value={field.id}
                   onChange={(e
                   ) => handleFieldChange(index, e.target.value)}
                   className="p-2 border rounded flex-1 mr-2"
+                  required
                 >
                   <option value="">Select a field</option>
-                  {allFields.map((f) => (
+                  {getAvailableFields(field.field).map((f) => (
                     <option key={f.id} value={f.id}>{f.label}</option>
                   ))}
                 </select>

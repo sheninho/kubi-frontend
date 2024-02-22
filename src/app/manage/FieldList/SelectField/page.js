@@ -96,13 +96,24 @@ const SelectFieldModal = ({ isOpen, onClose, onSubmit, fieldData }) => {
   const [field_name, setFieldName] = useState('');
   const [label, setLabel] = useState('');
   const [options, setOptions] = useState([{option_value: '', label: '' }]);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (fieldData) {
       setLabel(fieldData.label || '');
+      setFieldName(fieldData.field_name || '');
       setOptions(fieldData.options.length ? fieldData.options : [{ value: '', label: '' }]);
     }
   }, [fieldData]);
+
+  const hasDuplicates = () => {
+    const labels = options.map(option => option.label);
+    const values = options.map(option => option.value);
+    const hasDuplicateLabels = new Set(labels).size !== labels.length;
+    const hasDuplicateValues = new Set(values).size !== values.length;
+
+    return hasDuplicateLabels || hasDuplicateValues;
+  };
 
   const handleOptionChange = (index, key, value) => {
     const updatedOptions = [...options];
@@ -122,6 +133,11 @@ const SelectFieldModal = ({ isOpen, onClose, onSubmit, fieldData }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (hasDuplicates()) {
+      setErrorMessage('Les options ne peuvent pas avoir des labels ou des valeurs en double.');
+      return; // Empêche la soumission du formulaire
+    }
+    setErrorMessage('');
     onSubmit({
       label,
       field_name, // Ensure this is included
@@ -158,6 +174,7 @@ const SelectFieldModal = ({ isOpen, onClose, onSubmit, fieldData }) => {
               required
             />
           </div>
+          {errorMessage && <div className="text-center" style={{ color: 'red' }}>{errorMessage}</div>}
           <div className="mt-4">
             <label className="block">Options</label>
             {options.map((option, index) => (
