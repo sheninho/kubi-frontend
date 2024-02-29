@@ -19,16 +19,12 @@ import { useRouter } from 'next/navigation'
 export default function Header() {
   const [modal, setModal] = useState('Login');
   const [showModal, setShowModal] = useState(false);
-  const { isAuthenticated, accessToken, refreshToken, logout } = useAuth();
+  const { isAuthenticated, accessToken, refreshToken, logout, prepareLogin } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const router = useRouter()
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const handleLoginClick = () => {
-    // Logique pour ouvrir le modal de connexion
   };
 
   const changeModal = (value) => {
@@ -39,10 +35,11 @@ export default function Header() {
     e.preventDefault();
 
     if (!isAuthenticated) {
+      prepareLogin('creation/Listings?openCreationModal=creation');
       setModal('Login');
       setShowModal(true);
     } else {
-      router.push("creation/Listing")
+      router.push("creation/Listings?openCreationModal=creation")
     }
   };
 

@@ -90,9 +90,10 @@ const CategoryModal = ({ isOpen, onClose, onSave, category = null, allFields }) 
 
   useEffect(() => {
     if (category) {
+      console.log(category.category_fields);
       setName(category.name);
       setApplicationType(category.application_type);
-      setCategoryFields(category.category_fields || []);
+      setCategoryFields(category.category_fields);
     } else {
       setName('');
       setApplicationType('sale');
@@ -101,6 +102,7 @@ const CategoryModal = ({ isOpen, onClose, onSave, category = null, allFields }) 
   }, [category]);
 
   const handleAddField = () => {
+    console.log(category_fields)
     setCategoryFields([...category_fields, { field: '', is_required: false }]);
   };
 
@@ -182,10 +184,10 @@ const CategoryModal = ({ isOpen, onClose, onSave, category = null, allFields }) 
           </div>
           <div className="mt-4">
             <label>Fields</label>
-            {category_fields.map((field, index) => (
+            {category_fields.map((field,index) => (
               <div key={index} className="flex items-center mt-2">
                 <select
-                  value={field.id}
+                  value={field.field}
                   onChange={(e
                   ) => handleFieldChange(index, e.target.value)}
                   className="p-2 border rounded flex-1 mr-2"

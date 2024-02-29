@@ -1,5 +1,6 @@
 'use client'
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'
 
 const AuthContext = createContext();
 
@@ -11,6 +12,8 @@ export const AuthProvider = ({ children }) => {
         refreshToken: null,
         isAuthenticated: false,
     });
+    const router = useRouter()
+    const [redirectUrl, setRedirectUrl] = useState('');
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
@@ -23,7 +26,11 @@ export const AuthProvider = ({ children }) => {
     const login = (accessToken, refreshToken) => {
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-        setAuthState({ accessToken, refreshToken, isAuthenticated: true });
+        setAuthState({ accessToken, refreshToken, isAuthenticated: true });    
+        if (redirectUrl) {
+            router.push(redirectUrl);
+            setRedirectUrl('');
+          }
     };
 
     const logout = () => {
@@ -32,10 +39,15 @@ export const AuthProvider = ({ children }) => {
         setAuthState({ accessToken: null, refreshToken: null, isAuthenticated: false });
     };
 
+    const prepareLogin = (url) => {
+        setRedirectUrl(url);
+        // Ici, ouvrez votre modal de connexion
+      };
+
     // Ajoutez ici la logique pour rafraîchir le token si nécessaire
 
     return (
-        <AuthContext.Provider value={{ ...authState, login, logout }}>
+        <AuthContext.Provider value={{ ...authState, login, logout,prepareLogin }}>
             {children}
         </AuthContext.Provider>
     );

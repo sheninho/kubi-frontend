@@ -1,61 +1,61 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from 'react';
 import axiosService from '../../../services/axiosService'; // Update this path as needed
 import { API_URL } from '@/app/services/authService'; // Update this path as needed
 import { AiOutlineClose } from 'react-icons/ai';
 
-const IntegerFieldsManagement = () => {
-  const [integerFields, setIntegerFields] = useState([]);
+const DateFieldsManagement = () => {
+  const [dateFields, setDateFields] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentField, setCurrentField] = useState({
     label: '',
     field_name: '',
-    minValue: '',
-    maxValue: ''
+    minDate: '',
+    maxDate: ''
   });
 
   useEffect(() => {
-    fetchIntegerFields();
+    fetchDateFields();
   }, []);
 
-  const fetchIntegerFields = async () => {
+  const fetchDateFields = async () => {
     try {
-      const response = await axiosService.get(`${API_URL}integerfields/`);
-      setIntegerFields(response.data.results || []);
+      const response = await axiosService.get(`${API_URL}datefields/`);
+      setDateFields(response.data.results || []);
     } catch (error) {
-      console.error('Error loading IntegerFields', error);
+      console.error('Error loading DateFields', error);
     }
   };
 
-  const handleModalOpen = (field = { label: '', field_name: '', minValue: '', maxValue: '' }) => {
+  const handleModalOpen = (field = { label: '', field_name: '', minDate: '', maxDate: '' }) => {
     setCurrentField(field);
     setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    setCurrentField({ label: '', field_name: '', minValue: '', maxValue: '' });
+    setCurrentField({ label: '', field_name: '', minDate: '', maxDate: '' });
   };
 
   const handleFormSubmit = async (fieldData) => {
-    const url = currentField.id ? `${API_URL}integerfields/${currentField.id}/` : `${API_URL}integerfields/`;
+    const url = currentField.id ? `${API_URL}datefields/${currentField.id}/` : `${API_URL}datefields/`;
     const method = currentField.id ? 'patch' : 'post';
 
     try {
       await axiosService[method](url, fieldData);
-      fetchIntegerFields();
+      fetchDateFields();
       handleModalClose();
     } catch (error) {
-      console.error('Error submitting IntegerField', error);
+      console.error('Error submitting DateField', error);
     }
   };
 
   return (
     <div className="p-4">
       <button onClick={() => handleModalOpen()} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Add IntegerField
+        Add DateField
       </button>
-      {integerFields.map((field) => (
+      {dateFields.map((field) => (
         <div key={field.id} className="flex justify-between items-center bg-gray-100 p-2 rounded mb-2">
           <span>{field.label}</span>
           <div>
@@ -67,7 +67,7 @@ const IntegerFieldsManagement = () => {
         </div>
       ))}
       {isModalOpen && (
-        <IntegerFieldModal
+        <DateFieldModal
           isOpen={isModalOpen}
           onClose={handleModalClose}
           onSubmit={handleFormSubmit}
@@ -78,30 +78,28 @@ const IntegerFieldsManagement = () => {
   );
 };
 
-const IntegerFieldModal = ({ isOpen, onClose, onSubmit, fieldData }) => {
+const DateFieldModal = ({ isOpen, onClose, onSubmit, fieldData }) => {
   const [field_name, setFieldName] = useState('');
   const [label, setLabel] = useState('');
-  const [minValue, setMinValue] = useState('');
-  const [maxValue, setMaxValue] = useState('');
+  const [minDate, setMinDate] = useState('');
+  const [maxDate, setMaxDate] = useState('');
 
-  // Initialize form state with fieldData when the modal is opened
   useEffect(() => {
     if (fieldData) {
       setFieldName(fieldData.field_name || '');
       setLabel(fieldData.label || '');
-      setMinValue(fieldData.minValue || '');
-      setMaxValue(fieldData.maxValue || '');
+      setMinDate(fieldData.minDate || '');
+      setMaxDate(fieldData.maxDate || '');
     }
   }, [fieldData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Prepare data from state and call onSubmit
     onSubmit({
       field_name,
       label,
-      minValue: minValue ? Number(minValue) : null, // Ensure minValue and maxValue are submitted as numbers
-      maxValue: maxValue ? Number(maxValue) : null,
+      minDate,
+      maxDate,
     });
   };
 
@@ -110,10 +108,10 @@ const IntegerFieldModal = ({ isOpen, onClose, onSubmit, fieldData }) => {
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <h3 className="text-lg font-medium text-gray-900">{fieldData ? 'Edit IntegerField' : 'Add IntegerField'}</h3>
+        <h3 className="text-lg font-medium text-gray-900">{fieldData ? 'Edit DateField' : 'Add DateField'}</h3>
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <label className="block">Field Name</label>
+            <label>Field Name</label>
             <input
               type="text"
               value={field_name}
@@ -123,7 +121,7 @@ const IntegerFieldModal = ({ isOpen, onClose, onSubmit, fieldData }) => {
             />
           </div>
           <div className="mt-4">
-            <label className="block">Label</label>
+            <label>Label</label>
             <input
               type="text"
               value={label}
@@ -133,27 +131,24 @@ const IntegerFieldModal = ({ isOpen, onClose, onSubmit, fieldData }) => {
             />
           </div>
           <div className="mt-4">
-            <label className="block">Min Value</label>
+            <label>Min Date</label>
             <input
-              type="number"
-              value={minValue}
-              onChange={(e) => setMinValue(e.target.value)}
+              type="date"
+              value={minDate}
+              onChange={(e) => setMinDate(e.target.value)}
               className="w-full p-2 border rounded"
             />
           </div>
           <div className="mt-4">
-            <label className="block">Max Value</label>
+            <label>Max Date</label>
             <input
-              type="number"
-              value={maxValue}
-              onChange={(e) => setMaxValue(e.target.value)}
+              type="date"
+              value={maxDate}
+              onChange={(e) => setMaxDate(e.target.value)}
               className="w-full p-2 border rounded"
             />
           </div>
           <div className="flex justify-end mt-4">
-            <button type="button" onClick={onClose} className="mr-2 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-              Cancel
-            </button>
             <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
               Submit
             </button>
@@ -167,5 +162,4 @@ const IntegerFieldModal = ({ isOpen, onClose, onSubmit, fieldData }) => {
   );
 };
 
-
-export default IntegerFieldsManagement;
+export default DateFieldsManagement;
